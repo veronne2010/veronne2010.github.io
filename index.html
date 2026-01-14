@@ -3,83 +3,652 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>veronne2010 - Official GitHub website</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <title>veronne2010 // developer</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
+        * {
             margin: 0;
             padding: 0;
-            font-family: 'Roboto', sans-serif;
-            background-color: #0d1117;
-            color: #c9d1d9;
-            display: flex;
-            height: 100vh;
-            align-items: center;
-            justify-content: center;
+            box-sizing: border-box;
         }
 
+        :root {
+            --primary: #00ff88;
+            --primary-glow: rgba(0, 255, 136, 0.3);
+            --secondary: #00d9ff;
+            --bg-dark: #0a0e27;
+            --bg-darker: #050814;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text: #e0e0e0;
+            --text-dim: #888;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-darker);
+            color: var(--text);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .grid-line {
+            position: absolute;
+            background: linear-gradient(90deg, transparent, var(--primary-glow), transparent);
+            animation: scan 8s linear infinite;
+        }
+
+        .grid-line.horizontal {
+            width: 100%;
+            height: 2px;
+            left: 0;
+        }
+
+        .grid-line.vertical {
+            height: 100%;
+            width: 2px;
+            top: 0;
+        }
+
+        @keyframes scan {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .blob:nth-child(1) {
+            width: 400px;
+            height: 400px;
+            background: var(--primary);
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .blob:nth-child(2) {
+            width: 300px;
+            height: 300px;
+            background: var(--secondary);
+            bottom: 20%;
+            right: 10%;
+            animation-delay: 5s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(50px, -50px) scale(1.1); }
+            66% { transform: translate(-30px, 30px) scale(0.9); }
+        }
+
+        /* Container */
         .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header/Terminal Style */
+        header {
+            margin-bottom: 4rem;
+            padding: 2rem 0;
+        }
+
+        .terminal-header {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .terminal-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .terminal-dot.red { background: #ff5f56; }
+        .terminal-dot.yellow { background: #ffbd2e; }
+        .terminal-dot.green { background: #27c93f; }
+
+        .terminal-content {
+            padding: 1rem;
+        }
+
+        .prompt {
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .typing {
+            display: inline-block;
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        .ascii-art {
+            color: var(--secondary);
+            font-size: 0.7rem;
+            line-height: 1.2;
+            margin: 1rem 0;
+            white-space: pre;
+        }
+
+        h1 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin: 1rem 0;
+            text-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .tagline {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-dim);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--primary);
+            text-decoration: none;
+            padding: 0.6rem 1.2rem;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 6px;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        nav a:hover {
+            background: var(--primary);
+            color: var(--bg-dark);
+            border-color: var(--primary);
+            box-shadow: 0 0 20px var(--primary-glow);
+            transform: translateY(-2px);
+        }
+
+        /* Section Titles */
+        .section-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.8rem;
+            color: var(--secondary);
+            margin: 3rem 0 2rem;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            width: 80%;
-            max-width: 900px;
-        }
-
-        .intro {
-            text-align: left;
-        }
-
-        .intro h1 {
-            font-size: 3rem;
-            margin: 0;
-            color: #58a6ff;
-        }
-
-        .intro p {
-            font-size: 1.2rem;
-            margin-top: 0.5rem;
-            color: #8b949e;
-        }
-
-        .menu {
-            display: flex;
-            flex-direction: column;
             gap: 1rem;
         }
 
-        .menu a {
-            color: #58a6ff;
+        .section-title::before {
+            content: '>';
+            color: var(--primary);
+        }
+
+        /* Glass Cards */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.5rem;
             text-decoration: none;
-            font-weight: 500;
-            font-size: 1rem;
-            transition: color 0.2s;
+            color: inherit;
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
         }
 
-        .menu a:hover {
-            color: #1f6feb;
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary-glow), transparent);
+            opacity: 0;
+            transition: opacity 0.4s;
         }
 
-        @media (max-width: 600px) {
-            .container {
-                flex-direction: column;
-                text-align: center;
+        .glass-card:hover::before {
+            opacity: 1;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4),
+                        0 0 30px var(--primary-glow);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            border: 2px solid var(--glass-border);
+            padding: 8px;
+            background: var(--glass);
+        }
+
+        .card-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            color: var(--primary);
+            margin-bottom: 0.3rem;
+        }
+
+        .card-description {
+            color: var(--text-dim);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            padding: 0.3rem 0.8rem;
+            background: var(--bg-dark);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            color: var(--secondary);
+        }
+
+        .status-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            padding: 0.3rem 0.8rem;
+            background: var(--primary);
+            color: var(--bg-dark);
+            border-radius: 20px;
+            font-weight: 600;
+            z-index: 2;
+        }
+
+        .status-badge.wip {
+            background: #ff9500;
+        }
+
+        /* About Section */
+        .about-box {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .about-box p {
+            color: var(--text);
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .tech-item {
+            background: var(--bg-dark);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--primary);
+            transition: all 0.3s;
+        }
+
+        .tech-item:hover {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px var(--primary-glow);
+            transform: scale(1.05);
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--glass-border);
+            padding: 2rem 0;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .social-links a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .social-links a:hover {
+            color: var(--secondary);
+            text-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
             }
 
-            .menu {
-                flex-direction: row;
-                gap: 1.5rem;
-                margin-top: 2rem;
+            .section-title {
+                font-size: 1.4rem;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .ascii-art {
+                font-size: 0.5rem;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container" align="center">
-        <div class="intro">
-            <h1>veronne2010</h1>
-            <p>SITO IN MANUTENZIONE</p>
-        </div>
+    <div class="bg-animation">
+        <div class="blob"></div>
+        <div class="blob"></div>
+        <div class="grid-line horizontal" style="top: 30%; animation-delay: 0s;"></div>
+        <div class="grid-line horizontal" style="top: 70%; animation-delay: 4s;"></div>
+        <div class="grid-line vertical" style="left: 20%; animation-delay: 2s;"></div>
+        <div class="grid-line vertical" style="left: 80%; animation-delay: 6s;"></div>
+    </div>
+
+    <div class="container">
+        <header>
+            <div class="terminal-header">
+                <div class="terminal-bar">
+                    <div class="terminal-dot red"></div>
+                    <div class="terminal-dot yellow"></div>
+                    <div class="terminal-dot green"></div>
+                </div>
+                <div class="terminal-content">
+                    <div class="ascii-art">
+ ██╗   ██╗███████╗██████╗  ██████╗ ███╗   ██╗███╗   ██╗███████╗
+ ██║   ██║██╔════╝██╔══██╗██╔═══██╗████╗  ██║████╗  ██║██╔════╝
+ ██║   ██║█████╗  ██████╔╝██║   ██║██╔██╗ ██║██╔██╗ ██║█████╗  
+ ╚██╗ ██╔╝██╔══╝  ██╔══██╗██║   ██║██║╚██╗██║██║╚██╗██║██╔══╝  
+  ╚████╔╝ ███████╗██║  ██║╚██████╔╝██║ ╚████║██║ ╚████║███████╗
+   ╚═══╝  ╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝  ╚═══╝╚══════╝</div>
+                    <p><span class="prompt">user@internet:~$</span> whoami</p>
+                    <h1>veronne2010</h1>
+                    <p class="tagline">> Developer | Open Source | Problem Solver <span class="typing">_</span></p>
+                    <nav>
+                        <a href="#projects">// projects</a>
+                        <a href="#wip">// wip</a>
+                        <a href="#about">// about</a>
+                        <a href="https://github.com/Veronne2010" target="_blank">// github ↗</a>
+                        <a href="https://codeberg.org/Veronne2010" target="_blank">// codeberg ↗</a>
+                    </nav>
+                </div>
+            </div>
+        </header>
+
+        <section id="projects">
+            <h2 class="section-title">Published Projects</h2>
+            <div class="projects-grid">
+                <a href="https://github.com/veronne2010/PythonCalculator" target="_blank" class="glass-card">
+                    <span class="status-badge">LIVE</span>
+                    <div class="card-header">
+                        <img src="https://cdn-icons-png.flaticon.com/128/10188/10188185.png" alt="Calculator" class="card-icon">
+                        <div>
+                            <h2 class="card-title">PythonCalculator</h2>
+                        </div>
+                    </div>
+                    <p class="card-description">
+                        Una calcolatrice sviluppata in Python con interfaccia user-friendly e funzionalità avanzate per calcoli complessi.
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">GUI</span>
+                        <span class="tag">Math</span>
+                    </div>
+                </a>
+
+                <a href="https://veronne2010.github.io/GuessTheNumber/" target="_blank" class="glass-card">
+                    <span class="status-badge">LIVE</span>
+                    <div class="card-header">
+                        <img src="https://veronne2010.github.io/GuessTheNumber/images/Guess%20the%20number.jpg" alt="Game" class="card-icon">
+                        <div>
+                            <h2 class="card-title">Guess the Number</h2>
+                        </div>
+                    </div>
+                    <p class="card-description">
+                        Gioco interattivo web-based realizzato con vanilla JavaScript, HTML5 e CSS3 moderno.
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag">JavaScript</span>
+                        <span class="tag">HTML/CSS</span>
+                        <span class="tag">Game</span>
+                    </div>
+                </a>
+
+                <a href="https://github.com/veronne2010/classeviva_linuxwebapp" target="_blank" class="glass-card">
+                    <span class="status-badge">LIVE</span>
+                    <div class="card-header">
+                        <img src="https://cdn-icons-png.flaticon.com/128/11055/11055396.png" alt="WebApp" class="card-icon">
+                        <div>
+                            <h2 class="card-title">Classeviva Linux WebApp</h2>
+                        </div>
+                    </div>
+                    <p class="card-description">
+                        Web App dedicata per Classeviva, ottimizzata per l'ambiente desktop KDE Plasma 6.
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag">Linux</span>
+                        <span class="tag">KDE</span>
+                        <span class="tag">WebApp</span>
+                    </div>
+                </a>
+
+                <a href="https://github.com/veronne2010/risolutore_cramer-python" target="_blank" class="glass-card">
+                    <span class="status-badge">LIVE</span>
+                    <div class="card-header">
+                        <img src="https://cdn-icons-png.flaticon.com/128/17242/17242426.png" alt="Math" class="card-icon">
+                        <div>
+                            <h2 class="card-title">Risolutore Cramer</h2>
+                        </div>
+                    </div>
+                    <p class="card-description">
+                        Tool Python per risolvere sistemi di equazioni lineari utilizzando il metodo di Cramer.
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">Math</span>
+                        <span class="tag">CLI</span>
+                    </div>
+                </a>
+
+                <a href="https://github.com/veronne2010/VMwareRemote" target="_blank" class="glass-card">
+                    <span class="status-badge">LIVE</span>
+                    <div class="card-header">
+                        <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" alt="VM" class="card-icon">
+                        <div>
+                            <h2 class="card-title">VMware Remote</h2>
+                        </div>
+                    </div>
+                    <p class="card-description">
+                        Fork migliorato con interfaccia grafica rinnovata per gestione remota di macchine virtuali VMware.
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag">Fork</span>
+                        <span class="tag">VMware</span>
+                        <span class="tag">UI</span>
+                    </div>
+                </a>
+                <a href="https://veronne2010.github.io/risolvitoreWORDLE-IT/" target="_blank" class="glass-card">
+                    <span class="status-badge">LIVE</span>
+                    <div class="card-header">
+                        <img src="https://github.com/pietroppeter/wordle-it/blob/master/images/parle_logo_144x144.png?raw=true" alt="Wordle" class="card-icon" style="border-radius: 50%;">
+                        <div>
+                            <h2 class="card-title">Risolutore WORDLE-IT</h2>
+                        </div>
+                    </div>
+                    <p class="card-description">
+                        Algoritmo intelligente per risolvere puzzle WORDLE in italiano con suggerimenti strategici.
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag">JavaScript</span>
+                        <span class="tag">Algorithm</span>
+                        <span class="tag">Game</span>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <section id="wip">
+            <h2 class="section-title">Work in Progress</h2>
+            <div class="projects-grid">
+                <a href="javascript:void(0)" class="glass-card">
+                    <span class="status-badge wip">DEV</span>
+                    <div class="card-header">
+                        <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" alt="GRIP" class="card-icon">
+                        <div>
+                            <h2 class="card-title">GRIP</h2>
+                        </div>
+                    </div>
+                    <p class="card-description">
+                        Sistema avanzato per la gestione e l'aggiornamento facilitato delle cartelle cliniche.
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag">In Development</span>
+                        <span class="tag">Medical</span>
+                    </div>
+                </a>
+
+                <a href="https://github.com/veronne2010/RSSPyTelegramBotChUpdater" target="_blank" class="glass-card">
+                    <span class="status-badge wip">BETA</span>
+                    <div class="card-header">
+                        <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" alt="Bot" class="card-icon">
+                        <div>
+                            <h2 class="card-title">RSSPyTelegram<br/>BotChUpdater</h2>
+                        </div>
+                    </div>
+                    <p class="card-description">
+                        Bot Telegram automatico che monitora feed RSS e notifica i nuovi contenuti del tuo sito.
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">Telegram</span>
+                        <span class="tag">RSS</span>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <section id="about">
+            <h2 class="section-title">About</h2>
+            <div class="about-box">
+                <p>
+                    <span class="prompt">></span> Sviluppatore appassionato di tecnologie open source e automazione. 
+                    Creo soluzioni pratiche a problemi reali, con focus su usabilità e performance.
+                </p>
+                <p>
+                    <span class="prompt">></span> Specializzato in sviluppo cross-platform, scripting e ottimizzazione 
+                    di workflow. Contribuisco attivamente alla community open source.
+                </p>
+                <div class="tech-grid">
+                    <div class="tech-item">Python</div>
+                    <div class="tech-item">JavaScript</div>
+                    <div class="tech-item">HTML/CSS</div>
+                    <div class="tech-item">Bash</div>
+                    <div class="tech-item">Linux</div>
+                    <div class="tech-item">KDE Plasma</div>
+                    <div class="tech-item">Git</div>
+                    <div class="tech-item">SSH</div>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <div class="social-links">
+                <a href="https://github.com/Veronne2010" target="_blank">[github]</a>
+                <a href="mailto:your@email.com">[email]</a>
+            </div>
+            <p>veronne2010@github ~$ █</p>
+            <p style="margin-top: 0.5rem; opacity: 0.6;">© 2025 // Open Source Projects</p>
+        </footer>
     </div>
 </body>
 </html>
